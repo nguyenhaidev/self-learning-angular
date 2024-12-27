@@ -1,0 +1,111 @@
+<div class="w-full h-full p-6 flex items-center justify-center flex-col fr__container duration-300" [class]="bgColor()">
+  <form [formGroup]="dateOfBirthForm" [ngSwitch]="currentStep()" class="flex flex-col items-center gap-3 min-h-[700px]">
+    <div class="flex flex-grow items-center justify-center overflow-hidden text-5xl">
+      <span *ngSwitchCase="1" @fadeAnimation class="text-center">
+        Hi There,
+        <br>
+        I have a fact about your birthday...
+        <br>
+        <br>
+        Do you want to know?
+      </span>
+      <div *ngSwitchCase="2" @fadeAnimation class="flex flex-col items-center gap-3 text-center">
+        <div class="text-center">
+          Spill the beans,
+        </div>
+        <div class="h-[2px] max-w-[400px] w-[50%] bg-gray-50 rounded-full opacity-20 my-3"></div>
+        <div>Which month did you decide to be born in?</div>
+        <div class="flex flex-wrap mt-20 items-center justify-center gap-3 group/item px-5">
+          <button
+            *ngFor="let _ of Array.from({length: 12}); index as idx"
+            class="px-2 py-1 rounded-full border-4 hover:border group-hover/item:text-gray-50/25 hover:scale-150 duration-200 w-[60px] text-center border-gray-[50/2] group/edit"
+            [class.border-4]="dateOfBirthForm.get('month')?.value==idx+1"
+            (click)="onSelectMonth(idx+1)"
+          >
+            <span
+              class="group-hover/edit:text-white"
+              [class.border-red-400]="dateOfBirthForm.get('month')?.value==idx+1"
+              [class]="{'group-hover/edit:text-indigo-400': dateOfBirthForm.get('month')?.value==idx+1}"
+            >
+              {{ idx + 1 }}
+            </span>
+          </button>
+        </div>
+      </div>
+      <div *ngSwitchCase="3" @fadeAnimation class="flex flex-col gap-3 items-center p-1 ">
+        And the day...
+        <input
+          type="number" name="day" id="day"
+          formControlName="day"
+          class="bg-transparent border-white-300 p-2 mt-8 text-center h-20 rounded border-2 w-[300px]"
+          [min]="1"
+          [max]="31"
+          placeholder="..."
+          autofocus
+          [class.border-red-500]="!this.dateOfBirthForm.get('day')?.valid && this.dateOfBirthForm.get('day')?.touched"
+          (input)="hasError.set(false)"
+        >
+        <small
+          *ngIf="!this.dateOfBirthForm.get('day')?.valid && this.dateOfBirthForm.get('day')?.touched"
+          class="mt-3 text-red-400 text-xl"
+        >
+          Please enter a valid day between 1 and 31
+        </small>
+        <small *ngIf="hasError()" class="mt-3 text-red-400 text-xl">
+          Invalid input date. Please enter a valid date and try again.
+        </small>
+      </div>
+      <div *ngSwitchCase="4" @fadeAnimation class="flex flex-col gap-3 items-center p-1 text-3xl text-center">
+        In 2025, you are on top
+        <br>
+        <span class="text-7xl my-8">
+          #{{ fortuneRanking() }}
+        </span>
+        <div class="flex flex-col md:flex-row gap-3">
+          <span>
+            at the top of
+          </span>
+          <span>
+            The Fortune Rankings.
+          </span>
+        </div>
+      </div>
+      <span *ngSwitchDefault @fadeAnimation class="text center"></span>
+    </div>
+    <div
+      @fadeAnimation
+      [ngSwitch]="currentStep()"
+      class="flex gap-5 mt-5 text-3xl flex-col md:w-[40vw] justify-around md:flex-row-reverse min-h-[80px]"
+    >
+      <ng-container *ngIf="!isChangingStep()">
+        <ng-container *ngSwitchCase="2" class="">
+          <button
+            @fadeAnimation
+            *ngIf="isFieldValid('month')"
+            class="active:scale-110 duration-150"
+            (click)="updateStep(1)"
+          >
+            Next
+          </button>
+          <button class="opacity-50 hover:opacity-75 duration-150" (click)="updateStep(-1)">Back</button>
+        </ng-container>
+        <ng-container *ngSwitchCase="3">
+          <button
+            [class.opacity-500]="dateOfBirthForm.invalid"
+            class="active:scale-110 duration-150"
+            (click)="onSubmit()">Submit
+          </button>
+          <button class="opacity-50 hover:opacity-75 duration-150" (click)="updateStep(-1)">Back</button>
+        </ng-container>
+        <ng-container *ngSwitchCase="4">
+          <button routerLink="/" class="active:scale-110 duration-150" (click)="updateStep(1)">Home</button>
+          <button class="opacity-50 hover:opacity-75 duration-150" (click)="reset()">Try a New Date</button>
+        </ng-container>
+        <ng-container *ngSwitchCase="1">
+          <button class="active:scale-110 duration-150" (click)="updateStep(1)">Sure, Go Ahead!</button>
+          <button class="opacity-50 hover:opacity-75 duration-150" (click)="updateStep(-1)">Maybe later</button>
+        </ng-container>
+      </ng-container>
+    </div>
+  </form>
+</div>

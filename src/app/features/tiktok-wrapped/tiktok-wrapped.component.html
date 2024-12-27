@@ -1,0 +1,15 @@
+<div [ngSwitch]="currentStep" class="w-full h-full p-8 flex items-center justify-center">
+  <ng-container *ngSwitchCase="0">
+    <input *ngIf="!selectedFile; else elseTemplate" type="file" id="file"
+           (change)="onSelectFile($event.target)">
+    <ng-template #elseTemplate>
+      <i *ngIf="isLoading; else loadingElseTemplate" class="fa-solid fa-spinner animate-spin text-7xl"></i>
+      <ng-template #loadingElseTemplate>
+        {{ watchedVideos.length }}
+      </ng-template>
+    </ng-template>
+  </ng-container>
+  <app-greeting *ngSwitchCase="1" [userInfo]="userInfo"/>
+  <app-count-video *ngSwitchCase="2" [totalWatchedVideos]="watchedVideos.length"></app-count-video>
+  {{ totalWatchedTime }}
+</div>
