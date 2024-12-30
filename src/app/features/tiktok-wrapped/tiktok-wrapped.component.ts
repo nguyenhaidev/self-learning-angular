@@ -1,13 +1,19 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {Store} from '@ngrx/store';
 import {AppState} from '../../reducers';
-import {FileService} from '../../core/services/file.service';
+import {FileService, RawData} from '../../core/services/file.service';
 import {UserInfo, VideoItem} from '../../core/models/tiktok.model';
 import {delay, interval, of, Subscription, take} from 'rxjs';
 import {NgIf, NgSwitch, NgSwitchCase} from '@angular/common';
 import {GreetingComponent} from './greeting/greeting.component';
 import {CountVideoComponent} from './count-video/count-video.component';
 import dayjs from 'dayjs';
+import {SpentTimeComponent} from './spent-time/spent-time.component';
+import {MostActiveWeekdayComponent} from './most-active-weekday/most-active-weekday.component';
+import {LscCountComponent} from './lsc-count/lsc-count.component';
+import {SessionComponent} from './session/session.component';
+import {FollowComponent} from './follow/follow.component';
+import {SummaryComponent} from './summary/summary.component';
 
 @Component({
   selector: 'app-tiktok-wrapped',
@@ -16,24 +22,54 @@ import dayjs from 'dayjs';
     NgSwitch,
     NgSwitchCase,
     GreetingComponent,
-    CountVideoComponent
+    CountVideoComponent,
+    SpentTimeComponent,
+    MostActiveWeekdayComponent,
+    LscCountComponent,
+    SessionComponent,
+    FollowComponent,
+    SummaryComponent
   ],
   templateUrl: './tiktok-wrapped.component.html',
   styleUrl: './tiktok-wrapped.component.scss',
   providers: [FileService]
 })
-export class TiktokWrappedComponent implements OnDestroy {
+export class TiktokWrappedComponent {
   errMessage: string = ''
   isLoading: boolean = false;
-  watchedVideos: VideoItem[] = []
   selectedFile: any | null = null;
   currentStep = 0
   userInfo: UserInfo | null = null;
-  totalWatchedTime = 0
+  rawData: RawData = {
+    watchedVideos: [],
+    userInfo: null,
+    comments: [],
+    userVideos: [],
+    likedVideos: [],
+    sharedVideos: [],
+    followers: []
+  }
 
-  intervalSubscription?: Subscription
+  analyzedData = {
+    // Activity KPIs
+    spentTime: 0,
+    watchedTime: 0,
+    commentCount: 0,
+    likedVideoCount: 0,
+    sharedVideoCount: 0,
+    mostActiveWeekday: '',
 
-  constructor(private store: Store<AppState>, private fileService: FileService) {
+    // Follow KPI
+    followerGrowth: 0,
+    followingGrowth: 0,
+
+    // Session KPI
+    averageWatchTime: 0,
+    longestSession: '',
+    watchSessionCount: 0,
+  }
+
+  constructor(private fileService: FileService) {
   }
 
   onSelectFile(event: any) {
@@ -44,45 +80,31 @@ export class TiktokWrappedComponent implements OnDestroy {
     this.isLoading = true;
     this.selectedFile = event.files[0];
     this.fileService.readData(event.files[0]).pipe(delay(1000)).subscribe({
-      next: ({watchVideos, userInfo}) => {
-        this.userInfo = userInfo;
-        this.watchedVideos = watchVideos;
+        next: (rawData) => {
+          this.rawData = rawData;
+          const {followers, userInfo, userVideos, watchedVideos, sharedVideos, likedVideos, comments} = rawData;
 
-        const source$ = interval(3000).pipe(
-          take(2)
-        );
+          this.userInfo = userInfo;
 
-        // Subscribe to the observable
-        this.intervalSubscription = source$.subscribe((value) => {
-          this.currentStep = this.currentStep + 1;
-          if (this.currentStep === 2) {
-            // Aggregate data
-            this.totalWatchedTime = this.watchedVideos.reduce((prev, cur, currentIndex) => {
-              if (currentIndex == watchVideos.length - 1) {
-                return prev + 15
-              }
+          // Aggregate data
+          this.analyzedData.spentTime = watchedVideos.reduce((prev, cur, currentIndex) => {
+            if (currentIndex == watchedVideos.length - 1) {
+              return prev + 15
+            }
 
-              const diffWatchTime = Math.abs(dayjs(cur.Date).diff(watchVideos[currentIndex + 1].Date, "second"));
-              if (diffWatchTime > 10 * 60) {
-                return prev + 15;
-              }
-              return prev + diffWatchTime
-            }, 0)
-          }
-        });
-      },
-      error: error => {
-        this.errMessage = error;
-      },
-      complete: () => {
-        this.isLoading = false;
+            const diffWatchTime = Math.abs(dayjs(cur.Date).diff(watchedVideos[currentIndex + 1].Date, "second"));
+            if (diffWatchTime > 10 * 60) {
+              return prev + 15;
+            }
+            return prev + diffWatchTime
+          }, 0)
+          this.isLoading = false
+        }
       }
-    })
-
+    )
   }
 
-
-  ngOnDestroy() {
-    this.intervalSubscription?.unsubscribe();
+  updateStep(value: number) {
+    this.currentStep += value
   }
 }

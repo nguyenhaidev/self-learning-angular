@@ -1,13 +1,14 @@
 export enum DataTypes {
   ACTIVITY = 'Activity',
-  ADS_AND_DATA = 'Ads and data',
   COMMENT = 'Comment',
   PROFILE = 'Profile',
   VIDEO = 'Video',
+  PROFILE_INFO = 'Profile Information',
 }
 
 export enum ActivityTypes {
   VIDEO_HISTORY = 'Video Browsing History',
-  FAVORITE_VIDEOS = 'Favorite Videos',
-  LIKE_LIST = 'Like List'
+  SHARE_HISTORY = 'Share History',
+  LIKE_LIST = 'Like List',
+  FOLLOWER_LIST = 'Follower List'
 }

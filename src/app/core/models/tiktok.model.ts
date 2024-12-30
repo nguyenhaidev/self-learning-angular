@@ -6,7 +6,7 @@ export interface TiktokState {
   postedVideos: PostedVideo[],
   userInfo: UserInfo | null,
   comments: Comment[],
-  followingUsers: FollowingUser[]
+  followingUsers: FollowInfo[]
   isLoading: boolean
 }
 
@@ -25,7 +25,7 @@ export interface VideoItem {
   Link: string
 }
 
-export interface FollowingUser {
+export interface FollowInfo {
   Date: string
   UserName: string
 }
@@ -42,4 +42,10 @@ export interface UserInfo {
 
 export interface PostedVideo extends VideoItem {
   Liked: number
+}
+
+export interface UserVideo extends VideoItem {
+  AIGeneratedContent: string
+  Likes: number
+  Title: string
 }

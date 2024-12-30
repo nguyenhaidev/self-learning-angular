@@ -4,6 +4,18 @@ import {Observable} from 'rxjs';
 import {AppState} from '../../reducers';
 import {Store} from '@ngrx/store';
 import {ActivityTypes, DataTypes} from '../../utils/constants';
+import {Comment, FollowInfo, UserInfo, UserVideo, VideoItem} from '../models/tiktok.model';
+
+export interface RawData {
+  watchedVideos: VideoItem[]
+  userInfo: UserInfo | null
+  likedVideos: VideoItem[]
+  sharedVideos: VideoItem[]
+  comments: Comment[]
+  followers: FollowInfo[]
+  userVideos: UserVideo[]
+}
+
 
 @Injectable({
   providedIn: 'root'
@@ -12,7 +24,7 @@ export class FileService {
   constructor(private store: Store<AppState>) {
   }
 
-  readData(file: any): Observable<any> {
+  readData(file: any): Observable<RawData> {
     return new Observable((subscriber) => {
       (async () => {
         try {
@@ -23,14 +35,37 @@ export class FileService {
             return
           }
           const jsonContent = JSON.parse(jsonRaw);
-          console.log(jsonContent);
-          const watchedVideos = jsonContent?.[DataTypes.ACTIVITY]?.[ActivityTypes.VIDEO_HISTORY]?.VideoList
-          const userInfo = jsonContent?.[DataTypes.PROFILE]?.['Profile Information']?.ProfileMap
 
-          subscriber.next({
-            watchVideos: watchedVideos,
-            userInfo: userInfo
-          })
+          // Activities data
+          const activities = jsonContent?.[DataTypes.ACTIVITY]
+          const watchedVideos: VideoItem[] = activities?.[ActivityTypes.VIDEO_HISTORY]?.VideoList
+          const likedVideos: VideoItem[] = activities?.[ActivityTypes.LIKE_LIST]?.ItemFavoriteList
+          const sharedVideos: VideoItem[] = activities?.[ActivityTypes.SHARE_HISTORY]?.ShareHistoryList
+          const followers: FollowInfo[] = activities?.[ActivityTypes.FOLLOWER_LIST]?.FansList
+
+          // User information
+          const userInfo: UserInfo = jsonContent?.[DataTypes.PROFILE]?.[DataTypes.PROFILE_INFO]?.ProfileMap
+
+          // Comments
+          const comments: Comment[] = jsonContent?.[DataTypes.COMMENT]?.Comments?.CommentsList!
+
+          // User video
+          const userVideos: UserVideo[] = jsonContent?.[DataTypes.VIDEO].Videos.VideoList
+
+          const result = {
+            watchedVideos,
+            userInfo,
+            likedVideos,
+            sharedVideos,
+            comments,
+            followers,
+            userVideos
+          }
+
+          console.log('raw', jsonContent)
+          console.log('result', result)
+
+          subscriber.next(result)
         } catch (error) {
           subscriber.error(error);
         }
