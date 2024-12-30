@@ -1,13 +1,10 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
-import {Store} from '@ngrx/store';
-import {AppState} from '../../reducers';
+import {Component} from '@angular/core';
 import {FileService, RawData} from '../../core/services/file.service';
-import {UserInfo, VideoItem} from '../../core/models/tiktok.model';
-import {delay, interval, of, Subscription, take} from 'rxjs';
+import {UserInfo} from '../../core/models/tiktok.model';
+import {delay} from 'rxjs';
 import {NgIf, NgSwitch, NgSwitchCase} from '@angular/common';
 import {GreetingComponent} from './greeting/greeting.component';
 import {CountVideoComponent} from './count-video/count-video.component';
-import dayjs from 'dayjs';
 import {SpentTimeComponent} from './spent-time/spent-time.component';
 import {MostActiveWeekdayComponent} from './most-active-weekday/most-active-weekday.component';
 import {LscCountComponent} from './lsc-count/lsc-count.component';
@@ -83,21 +80,12 @@ export class TiktokWrappedComponent {
         next: (rawData) => {
           this.rawData = rawData;
           const {followers, userInfo, userVideos, watchedVideos, sharedVideos, likedVideos, comments} = rawData;
-
           this.userInfo = userInfo;
-
-          // Aggregate data
-          this.analyzedData.spentTime = watchedVideos.reduce((prev, cur, currentIndex) => {
-            if (currentIndex == watchedVideos.length - 1) {
-              return prev + 15
-            }
-
-            const diffWatchTime = Math.abs(dayjs(cur.Date).diff(watchedVideos[currentIndex + 1].Date, "second"));
-            if (diffWatchTime > 10 * 60) {
-              return prev + 15;
-            }
-            return prev + diffWatchTime
-          }, 0)
+        },
+        error: (error) => {
+          this.errMessage = error.message;
+        },
+        complete: () => {
           this.isLoading = false
         }
       }

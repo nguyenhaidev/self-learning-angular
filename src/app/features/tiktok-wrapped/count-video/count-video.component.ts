@@ -1,5 +1,4 @@
 import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
-import sample from 'lodash/sample';
 import {VideoItem} from '../../../core/models/tiktok.model';
 import {random} from 'lodash';
 

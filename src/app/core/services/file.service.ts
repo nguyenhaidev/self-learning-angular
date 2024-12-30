@@ -1,8 +1,6 @@
 import {Injectable} from '@angular/core';
 import JSZip from 'jszip';
 import {Observable} from 'rxjs';
-import {AppState} from '../../reducers';
-import {Store} from '@ngrx/store';
 import {ActivityTypes, DataTypes} from '../../utils/constants';
 import {Comment, FollowInfo, UserInfo, UserVideo, VideoItem} from '../models/tiktok.model';
 
@@ -21,7 +19,7 @@ export interface RawData {
   providedIn: 'root'
 })
 export class FileService {
-  constructor(private store: Store<AppState>) {
+  constructor() {
   }
 
   readData(file: any): Observable<RawData> {
@@ -61,10 +59,6 @@ export class FileService {
             followers,
             userVideos
           }
-
-          console.log('raw', jsonContent)
-          console.log('result', result)
-
           subscriber.next(result)
         } catch (error) {
           subscriber.error(error);
