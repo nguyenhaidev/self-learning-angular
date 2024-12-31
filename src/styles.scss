@@ -2,6 +2,8 @@
 @tailwind components;
 @tailwind utilities;
 
-body {
+@import url(assets/fonts/index.scss);
+
+body > * {
   font-family: 'Poppins', sans-serif;
 }

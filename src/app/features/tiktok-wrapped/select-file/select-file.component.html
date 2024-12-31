@@ -1,5 +1,33 @@
-  <input *ngIf="!selectedFile; else elseTemplate" type="file" id="file"
-         (change)="onSelectFile($event.target)"/>
-  <ng-template #elseTemplate>
-    <i *ngIf="isLoading" class="fa-solid fa-spinner animate-spin text-7xl"></i>
-  </ng-template>
+<div
+  *ngIf="!selectedFile; else elseTemplate"
+  class="flex flex-col items-center justify-center gap-8 text-center select-none"
+>
+  <h1 class="md:text-5xl text-xl">Your TikTok Journey 📖</h1>
+  <p class="text-3xl">
+    2024 was a year full of trends, laughs, and unforgettable moments.
+    <br class="md:hidden block"/>
+    <br class="md:hidden block"/>
+    Ready to see your highlights?
+  </p>
+
+  <label
+    for="file"
+    class="group/item mt-5 hover:scale-110 duration-200 cursor-pointer border-sky-300 border px-3 py-2 rounded-full
+    hover:bg-sky-300 flex gap-3 w-[200px] items-center justify-around"
+  >
+    <i class="fa-solid fa-arrow-right group-hover/item:block hidden"></i>
+    <span class=" group-hover/item:text-black  group-hover/item:font-semibold">
+      Select file
+    </span>
+    <i class="fa-solid fa-arrow-left group-hover/item:block hidden"></i>
+  </label>
+  <input
+    class="hidden"
+    type="file"
+    id="file"
+    (change)="onSelectFile($event.target)"
+  />
+</div>
+<ng-template #elseTemplate>
+  <i *ngIf="isLoading" class="fa-solid fa-spinner animate-spin-slow text-7xl 3s"></i>
+</ng-template>

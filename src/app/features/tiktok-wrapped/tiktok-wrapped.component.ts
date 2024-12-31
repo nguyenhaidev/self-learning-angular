@@ -2,7 +2,7 @@ import {Component} from '@angular/core';
 import {FileService, RawData} from '../../core/services/file.service';
 import {AnalyzedData, IAnalyzedData} from '../../core/models/tiktok.model';
 import {delay} from 'rxjs';
-import {NgSwitch, NgSwitchCase} from '@angular/common';
+import {NgIf, NgSwitch, NgSwitchCase} from '@angular/common';
 import {GreetingComponent} from './greeting/greeting.component';
 import {CountVideoComponent} from './count-video/count-video.component';
 import {SpentTimeComponent} from './spent-time/spent-time.component';
@@ -13,6 +13,9 @@ import {FollowComponent} from './follow/follow.component';
 import {SummaryComponent} from './summary/summary.component';
 import {AnalyzeService} from '../../core/services/analyze.service';
 import {SelectFileComponent} from './select-file/select-file.component';
+import {Store} from '@ngrx/store';
+import {AppState} from '../../reducers';
+import {updateTikTokStates} from './store/tiktok.actions';
 
 @Component({
   selector: 'app-tiktok-wrapped',
@@ -27,7 +30,8 @@ import {SelectFileComponent} from './select-file/select-file.component';
     SessionComponent,
     FollowComponent,
     SummaryComponent,
-    SelectFileComponent
+    SelectFileComponent,
+    NgIf
   ],
   templateUrl: './tiktok-wrapped.component.html',
   styleUrl: './tiktok-wrapped.component.scss',
@@ -50,11 +54,11 @@ export class TiktokWrappedComponent {
 
   analyzedData: IAnalyzedData = new AnalyzedData();
 
-  constructor(private fileService: FileService, private analyzeService: AnalyzeService) {
+  constructor(private fileService: FileService, private analyzeService: AnalyzeService, private store: Store<AppState>) {
   }
 
   onSelectFile(file: File | null) {
-    if(!file){
+    if (!file) {
       return;
     }
 
@@ -63,7 +67,7 @@ export class TiktokWrappedComponent {
         next: (rawData) => {
           this.rawData = rawData;
           this.analyzedData = this.analyzeService.analyzeData(this.rawData);
-          console.log(this.analyzedData)
+          this.store.dispatch(updateTikTokStates({analyzedData: this.analyzedData}));
           this.currentStep++
         },
         error: (error) => {

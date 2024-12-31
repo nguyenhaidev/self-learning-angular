@@ -29,10 +29,12 @@
               {
                 "glob": "**/*",
                 "input": "public"
-              }
+              },
+              "src/assets/fonts/index.scss"
             ],
             "styles": [
-              "src/styles.scss"
+              "src/styles.scss",
+              "src/assets/fonts/index.scss"
             ],
             "scripts": [],
             "allowedCommonJsDependencies": [

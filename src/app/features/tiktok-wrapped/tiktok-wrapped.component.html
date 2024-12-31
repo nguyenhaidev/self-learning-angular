@@ -19,7 +19,7 @@
     <app-summary *ngSwitchCase="9"></app-summary>
   </div>
 
-  <div class="p-3 flex gap-5">
+  <div *ngIf="!isLoading && !!rawData.userInfo" class="p-3 flex gap-5">
     <button
       class="rounded-full border border-white p-2"
       (click)="updateStep(-1)"
