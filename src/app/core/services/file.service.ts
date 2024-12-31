@@ -2,7 +2,7 @@ import {Injectable} from '@angular/core';
 import JSZip from 'jszip';
 import {Observable} from 'rxjs';
 import {ActivityTypes, DataTypes} from '../../utils/constants';
-import {IAnalyzedData, Comment, FollowInfo, UserInfo, UserVideo, VideoItem, AnalyzedData} from '../models/tiktok.model';
+import {Comment, FollowInfo, UserInfo, UserVideo, VideoItem} from '../models/tiktok.model';
 import {AnalyzeService} from './analyze.service';
 
 export interface RawData {

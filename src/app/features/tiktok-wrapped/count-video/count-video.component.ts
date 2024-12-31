@@ -1,6 +1,4 @@
-import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
-import {VideoItem} from '../../../core/models/tiktok.model';
-import {random} from 'lodash';
+import {Component, Input} from '@angular/core';
 
 @Component({
   selector: 'app-count-video',
