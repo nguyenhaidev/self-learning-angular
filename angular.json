@@ -34,7 +34,11 @@
             "styles": [
               "src/styles.scss"
             ],
-            "scripts": []
+            "scripts": [],
+            "allowedCommonJsDependencies": [
+              "dayjs",
+              "jszip"
+            ]
           },
           "configurations": {
             "production": {
@@ -88,7 +92,8 @@
               {
                 "glob": "**/*",
                 "input": "public"
-              }
+              },
+              "src/app/assets/*"
             ],
             "styles": [
               "src/styles.scss"

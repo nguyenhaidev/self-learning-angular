@@ -12,11 +12,11 @@ import {SessionComponent} from './session/session.component';
 import {FollowComponent} from './follow/follow.component';
 import {SummaryComponent} from './summary/summary.component';
 import {AnalyzeService} from '../../core/services/analyze.service';
+import {SelectFileComponent} from './select-file/select-file.component';
 
 @Component({
   selector: 'app-tiktok-wrapped',
   imports: [
-    NgIf,
     NgSwitch,
     NgSwitchCase,
     GreetingComponent,
@@ -26,7 +26,8 @@ import {AnalyzeService} from '../../core/services/analyze.service';
     LscCountComponent,
     SessionComponent,
     FollowComponent,
-    SummaryComponent
+    SummaryComponent,
+    SelectFileComponent
   ],
   templateUrl: './tiktok-wrapped.component.html',
   styleUrl: './tiktok-wrapped.component.scss',
@@ -35,7 +36,6 @@ import {AnalyzeService} from '../../core/services/analyze.service';
 export class TiktokWrappedComponent {
   errMessage: string = ''
   isLoading: boolean = false;
-  selectedFile: any | null = null;
   currentStep = 0
   rawData: RawData = {
     watchedVideos: [],
@@ -53,18 +53,18 @@ export class TiktokWrappedComponent {
   constructor(private fileService: FileService, private analyzeService: AnalyzeService) {
   }
 
-  onSelectFile(event: any) {
-    if (!event.files[0]) {
-      this.selectedFile = null
-      return
+  onSelectFile(file: File | null) {
+    if(!file){
+      return;
     }
+
     this.isLoading = true;
-    this.selectedFile = event.files[0];
-    this.fileService.readData(event.files[0]).pipe(delay(1000)).subscribe({
+    this.fileService.readData(file).pipe(delay(2000)).subscribe({
         next: (rawData) => {
           this.rawData = rawData;
           this.analyzedData = this.analyzeService.analyzeData(this.rawData);
           console.log(this.analyzedData)
+          this.currentStep++
         },
         error: (error) => {
           this.errMessage = error.message;

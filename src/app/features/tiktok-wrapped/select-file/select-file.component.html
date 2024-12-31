@@ -1,0 +1,5 @@
+  <input *ngIf="!selectedFile; else elseTemplate" type="file" id="file"
+         (change)="onSelectFile($event.target)"/>
+  <ng-template #elseTemplate>
+    <i *ngIf="isLoading" class="fa-solid fa-spinner animate-spin text-7xl"></i>
+  </ng-template>
