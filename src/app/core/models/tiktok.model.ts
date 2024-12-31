@@ -1,15 +1,3 @@
-export interface TiktokState {
-  watchVideos: VideoItem[]
-  watchSession: LoginSession[]
-  likedVideos: VideoItem[]
-  sharedVideos: SharedVideo[],
-  postedVideos: PostedVideo[],
-  userInfo: UserInfo | null,
-  comments: Comment[],
-  followingUsers: FollowInfo[]
-  isLoading: boolean
-}
-
 export class AnalyzedData implements IAnalyzedData {
   averageWatchTime: number;
   commentCount: number;
@@ -21,7 +9,6 @@ export class AnalyzedData implements IAnalyzedData {
   sharedVideoCount: number;
   spentTime: number;
   watchSessionCount: number;
-  watchedTime: number;
   watchedVideosCount: number;
 
   constructor() {
@@ -35,7 +22,6 @@ export class AnalyzedData implements IAnalyzedData {
     this.sharedVideoCount = 0;
     this.spentTime = 0;
     this.watchSessionCount = 0;
-    this.watchedTime = 0;
     this.watchedVideosCount = 0;
   }
 }

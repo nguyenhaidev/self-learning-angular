@@ -63,8 +63,8 @@ export class TiktokWrappedComponent {
     this.fileService.readData(event.files[0]).pipe(delay(1000)).subscribe({
         next: (rawData) => {
           this.rawData = rawData;
-          console.log(this.rawData);
           this.analyzedData = this.analyzeService.analyzeData(this.rawData);
+          console.log(this.analyzedData)
         },
         error: (error) => {
           this.errMessage = error.message;
