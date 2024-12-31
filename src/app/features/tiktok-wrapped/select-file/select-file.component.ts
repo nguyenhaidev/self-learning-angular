@@ -1,5 +1,4 @@
 import {Component, EventEmitter, Input, Output} from '@angular/core';
-import {FileService} from '../../../core/services/file.service';
 import {NgIf} from '@angular/common';
 
 @Component({

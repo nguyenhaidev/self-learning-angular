@@ -2,7 +2,7 @@ import {Component} from '@angular/core';
 import {FileService, RawData} from '../../core/services/file.service';
 import {AnalyzedData, IAnalyzedData} from '../../core/models/tiktok.model';
 import {delay} from 'rxjs';
-import {NgIf, NgSwitch, NgSwitchCase} from '@angular/common';
+import {NgSwitch, NgSwitchCase} from '@angular/common';
 import {GreetingComponent} from './greeting/greeting.component';
 import {CountVideoComponent} from './count-video/count-video.component';
 import {SpentTimeComponent} from './spent-time/spent-time.component';
