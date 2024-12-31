@@ -10,5 +10,6 @@ export enum ActivityTypes {
   VIDEO_HISTORY = 'Video Browsing History',
   SHARE_HISTORY = 'Share History',
   LIKE_LIST = 'Like List',
-  FOLLOWER_LIST = 'Follower List'
+  FOLLOWER_LIST = 'Follower List',
+  FOLLOWING_LIST = 'Following List'
 }

@@ -2,7 +2,8 @@ import {Injectable} from '@angular/core';
 import JSZip from 'jszip';
 import {Observable} from 'rxjs';
 import {ActivityTypes, DataTypes} from '../../utils/constants';
-import {Comment, FollowInfo, UserInfo, UserVideo, VideoItem} from '../models/tiktok.model';
+import {IAnalyzedData, Comment, FollowInfo, UserInfo, UserVideo, VideoItem, AnalyzedData} from '../models/tiktok.model';
+import {AnalyzeService} from './analyze.service';
 
 export interface RawData {
   watchedVideos: VideoItem[]
@@ -11,6 +12,7 @@ export interface RawData {
   sharedVideos: VideoItem[]
   comments: Comment[]
   followers: FollowInfo[]
+  followings: FollowInfo[]
   userVideos: UserVideo[]
 }
 
@@ -19,7 +21,7 @@ export interface RawData {
   providedIn: 'root'
 })
 export class FileService {
-  constructor() {
+  constructor(private analyzeService: AnalyzeService) {
   }
 
   readData(file: any): Observable<RawData> {
@@ -40,6 +42,7 @@ export class FileService {
           const likedVideos: VideoItem[] = activities?.[ActivityTypes.LIKE_LIST]?.ItemFavoriteList
           const sharedVideos: VideoItem[] = activities?.[ActivityTypes.SHARE_HISTORY]?.ShareHistoryList
           const followers: FollowInfo[] = activities?.[ActivityTypes.FOLLOWER_LIST]?.FansList
+          const followings: FollowInfo[] = activities?.[ActivityTypes.FOLLOWING_LIST]?.Following
 
           // User information
           const userInfo: UserInfo = jsonContent?.[DataTypes.PROFILE]?.[DataTypes.PROFILE_INFO]?.ProfileMap
@@ -49,15 +52,17 @@ export class FileService {
 
           // User video
           const userVideos: UserVideo[] = jsonContent?.[DataTypes.VIDEO].Videos.VideoList
-
+          console.log(jsonContent)
           const result = {
-            watchedVideos,
+            watchedVideos: this.analyzeService.filterData(watchedVideos),
             userInfo,
-            likedVideos,
-            sharedVideos,
-            comments,
+            likedVideos: this.analyzeService.filterData(likedVideos),
+            sharedVideos: this.analyzeService.filterData(sharedVideos),
+            comments: this.analyzeService.filterData(comments),
+            // followers: this.analyzeService.filterData(followers),
             followers,
-            userVideos
+            followings,
+            userVideos: this.analyzeService.filterData(userVideos),
           }
           subscriber.next(result)
         } catch (error) {
@@ -66,4 +71,5 @@ export class FileService {
       })();
     });
   }
+
 }

@@ -1,6 +1,6 @@
 import {Component} from '@angular/core';
 import {FileService, RawData} from '../../core/services/file.service';
-import {UserInfo} from '../../core/models/tiktok.model';
+import {AnalyzedData, IAnalyzedData, UserInfo} from '../../core/models/tiktok.model';
 import {delay} from 'rxjs';
 import {NgIf, NgSwitch, NgSwitchCase} from '@angular/common';
 import {GreetingComponent} from './greeting/greeting.component';
@@ -11,6 +11,7 @@ import {LscCountComponent} from './lsc-count/lsc-count.component';
 import {SessionComponent} from './session/session.component';
 import {FollowComponent} from './follow/follow.component';
 import {SummaryComponent} from './summary/summary.component';
+import {AnalyzeService} from '../../core/services/analyze.service';
 
 @Component({
   selector: 'app-tiktok-wrapped',
@@ -29,14 +30,13 @@ import {SummaryComponent} from './summary/summary.component';
   ],
   templateUrl: './tiktok-wrapped.component.html',
   styleUrl: './tiktok-wrapped.component.scss',
-  providers: [FileService]
+  providers: [FileService, AnalyzeService]
 })
 export class TiktokWrappedComponent {
   errMessage: string = ''
   isLoading: boolean = false;
   selectedFile: any | null = null;
   currentStep = 0
-  userInfo: UserInfo | null = null;
   rawData: RawData = {
     watchedVideos: [],
     userInfo: null,
@@ -44,29 +44,13 @@ export class TiktokWrappedComponent {
     userVideos: [],
     likedVideos: [],
     sharedVideos: [],
-    followers: []
+    followers: [],
+    followings: []
   }
 
-  analyzedData = {
-    // Activity KPIs
-    spentTime: 0,
-    watchedTime: 0,
-    commentCount: 0,
-    likedVideoCount: 0,
-    sharedVideoCount: 0,
-    mostActiveWeekday: '',
+  analyzedData: IAnalyzedData = new AnalyzedData();
 
-    // Follow KPI
-    followerGrowth: 0,
-    followingGrowth: 0,
-
-    // Session KPI
-    averageWatchTime: 0,
-    longestSession: '',
-    watchSessionCount: 0,
-  }
-
-  constructor(private fileService: FileService) {
+  constructor(private fileService: FileService, private analyzeService: AnalyzeService) {
   }
 
   onSelectFile(event: any) {
@@ -79,8 +63,8 @@ export class TiktokWrappedComponent {
     this.fileService.readData(event.files[0]).pipe(delay(1000)).subscribe({
         next: (rawData) => {
           this.rawData = rawData;
-          const {followers, userInfo, userVideos, watchedVideos, sharedVideos, likedVideos, comments} = rawData;
-          this.userInfo = userInfo;
+          console.log(this.rawData);
+          this.analyzedData = this.analyzeService.analyzeData(this.rawData);
         },
         error: (error) => {
           this.errMessage = error.message;

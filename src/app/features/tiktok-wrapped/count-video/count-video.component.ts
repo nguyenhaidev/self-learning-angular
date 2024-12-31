@@ -8,10 +8,8 @@ import {random} from 'lodash';
   templateUrl: './count-video.component.html',
   styleUrl: './count-video.component.scss'
 })
-export class CountVideoComponent implements OnInit {
-  @Input({required: true}) watchedVideos: VideoItem[] = []
-  @Input() watchVideoCount: number = 0
-  @Output() watchVideoCountChange = new EventEmitter<number>()
+export class CountVideoComponent {
+  @Input({required: true}) watchVideoCount!: number
 
   messageTemplates: string[] = [
     "You watched [X,XXX videos] on TikTok this year! That’s a lot of laughter, learning, and memories! 🎥",
@@ -20,10 +18,4 @@ export class CountVideoComponent implements OnInit {
   ];
   messageTemplate = this.messageTemplates[0];
 
-  ngOnInit(): void {
-    this.watchVideoCount = this.watchedVideos.length;
-    this.watchVideoCountChange.emit(this.watchVideoCount);
-    const randomIndex = random(0, 2)
-    this.messageTemplate = this.messageTemplates[randomIndex];
-  }
 }
