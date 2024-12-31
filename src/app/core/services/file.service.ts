@@ -52,19 +52,17 @@ export class FileService {
 
           // User video
           const userVideos: UserVideo[] = jsonContent?.[DataTypes.VIDEO].Videos.VideoList
-          console.log(jsonContent)
-          const result = {
+
+          subscriber.next({
             watchedVideos: this.analyzeService.filterData(watchedVideos),
             userInfo,
             likedVideos: this.analyzeService.filterData(likedVideos),
             sharedVideos: this.analyzeService.filterData(sharedVideos),
-            comments: this.analyzeService.filterData(comments),
-            // followers: this.analyzeService.filterData(followers),
+            comments: this.analyzeService.filterData(comments, 'date'),
             followers,
             followings,
             userVideos: this.analyzeService.filterData(userVideos),
-          }
-          subscriber.next(result)
+          })
         } catch (error) {
           subscriber.error(error);
         }
